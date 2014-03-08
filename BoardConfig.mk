@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 The CyanogenMod Project
+# Copyright (C) 2014 The CyanogenMod Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,121 +16,104 @@
 
 LOCAL_PATH := device/rockchip/rk3188
 
-TARGET_ARCH := arm
-TARGET_ARCH_VARIANT := cortex-a9
-TARGET_ARCH_VARIANT_FPU := neon
-ARCH_ARM_HAVE_NEON := true
-TARGET_CPU_ABI := armeabi-v7a
-TARGET_CPU_ABI2 := armeabi
-TARGET_CPU_SMP := true
-ARCH_ARM_HAVE_TLS_REGISTER := true
-ARCH_ARM_HAVE_VFP := true
-ARCH_ARM_HAVE_NEON := true
-ARCH_ARM_HAVE_ARMV7A := true
-TARGET_GLOBAL_CFLAGS += -mtune=cortex-a9 -mfpu=neon -mfloat-abi=softfp
-TARGET_GLOBAL_CPPFLAGS += -mtune=cortex-a9 -mfpu=neon -mfloat-abi=softfp
-TARGET_BOARD_PLATFORM := rk31board
-TARGET_BOARD_HARDWARE := rk30board
+TARGET_BOARD_PLATFORM ?= rk30xx
+TARGET_BOARD_PLATFORM_GPU ?= mali400
+TARGET_BOARD_HARDWARE ?= rk30board
+BOARD_USE_LCDC_COMPOSER ?= false
+BOARD_USE_LOW_MEM ?= false
+$(warning rksdk boradconfig BOARD_USE_LOW_MEM=$(BOARD_USE_LOW_MEM))
+TARGET_NO_BOOTLOADER ?= true
+TARGET_CPU_VARIANT := cortex-a9
+TARGET_RELEASETOOLS_EXTENSIONS := device/rockchip/rk3188/common
 
-TARGET_NO_BOOTLOADER := true
-TARGET_NO_RADIOIMAGE := true
 
 TARGET_BOARD_INFO_FILE := $(LOCAL_PATH)/board-info.txt
 
 TARGET_PREBUILT_KERNEL := $(LOCAL_PATH)/kernel
 
 BOARD_CUSTOM_BOOTIMG_MK := $(LOCAL_PATH)/custombootimg.mk
-# Init
-TARGET_PROVIDES_INIT := true
-TARGET_PROVIDES_INIT_TARGET_RC := true
-TARGET_RECOVERY_INITRC := $(LOCAL_PATH)/recovery/init.rc
 
-#Vold
-TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/class/android_usb/android0/f_mass_storage/lun%d/file"
-TARGET_USE_CUSTOM_SECOND_LUN_NUM := 1
-BOARD_VOLD_MAX_PARTITIONS := 20
+BOARD_EGL_CFG := device/rockchip/common/gpu/libmali_smp/egl.cfg
 
-#Touch screen
-BOARD_USE_LEGACY_TOUCHSCREEN := true
 
-#HDMI
-TARGET_HAVE_HDMI_OUT := true
-BOARD_USES_HDMI := true
+TARGET_PROVIDES_INIT_RC ?= true
+TARGET_NO_KERNEL ?= false
+TARGET_NO_RECOVERY ?= false
 
-#Audio
-BOARD_USES_GENERIC_AUDIO := false
-BOARD_USES_ALSA_AUDIO := true
+# to flip screen in recovery 
+BOARD_HAS_FLIPPED_SCREEN := false
 
-# Partitons
-BOARD_FLASH_BLOCK_SIZE := 4096
-BOARD_SYSTEMIMAGE_PARTITION_SIZE := 482344960
-BOARD_USERDATAIMAGE_PARTITION_SIZE := 1572864000
+# To use bmp as kernel logo, uncomment the line below to use bgra 8888 in recovery
+#TARGET_RECOVERY_PIXEL_FORMAT := "BGRA_8888"
+TARGET_ROCKCHIP_PCBATEST := false
 TARGET_USERIMAGES_USE_EXT4 := true
+RECOVERY_BOARD_ID := false
+TARGET_CPU_SMP := true
+BOARD_USES_GENERIC_AUDIO := true
 
-# Releasetools
-#TARGET_RELEASETOOLS_EXTENSIONS := $(LOCAL_PATH)/releasetools
-TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT := ./$(LOCAL_PATH)/releasetools/rk31xx_ota_from_target_files
+//MAX-SIZE=512M, for generate out/.../system.img
+BOARD_SYSTEMIMAGE_PARTITION_SIZE := 1073741824
+BOARD_FLASH_BLOCK_SIZE := 131072
 
-# Graphics
-BOARD_EGL_CFG := $(LOCAL_PATH)/config/egl.cfg
+
+TARGET_CPU_ABI := armeabi-v7a
+TARGET_CPU_ABI2 := armeabi
+
+# Enable NEON feature
+TARGET_ARCH := arm
+TARGET_ARCH_VARIANT := armv7-a-neon
+ARCH_ARM_HAVE_TLS_REGISTER := true
+
+#BOARD_LIB_DUMPSTATE := libdumpstate.$(TARGET_BOARD_PLATFORM)
+
 USE_OPENGL_RENDERER := true
 
-#BOARD_USES_HGL := true
-USE_OPENGL_RENDERER := true
-TARGET_DISABLE_TRIPLE_BUFFERING := true
-ENABLE_WEBGL := true
-BOARD_NEEDS_MEMORYHEAPPMEM := true
-TARGET_USES_ION := true
+# rk30sdk uses Cortex A9
+TARGET_EXTRA_CFLAGS += $(call cc-option,-mtune=cortex-a9,$(call cc-option,-mtune=cortex-a8)) $(call cc-option,-mcpu=cortex-a9,$(call cc-option,-mcpu=cortex-a8))
 
-
-#COMMON_GLOBAL_CFLAGS += -DSURFACEFLINGER_FORCE_SCREEN_RELEASE -DNO_RGBX_8888 -DMISSING_GRALLOC_BUFFERS
-
-# HWComposer
-BOARD_USES_HWCOMPOSER := true
-SMALLER_FONT_FOOTPRINT := true
-
-# Wifi stuff
-
-# WLAN
-BOARD_WPA_SUPPLICANT_DRIVER := WEXT
-WPA_SUPPLICANT_VERSION      := VER_0_8_X
-BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_bcmdhd
-BOARD_HOSTAPD_DRIVER        := WEXT
-BOARD_HOSTAPD_PRIVATE_LIB   := lib_driver_cmd_bcmdhd
-BOARD_WLAN_DEVICE           := bcmdhd
-WIFI_DRIVER_MODULE_PATH     := "/system/lib/modules/rkwifi.ko"
-WIFI_DRIVER_MODULE_NAME     := "wlan"
-
-# Graphics
-BOARD_EGL_CFG := device/rockchip/rk3188/egl.cfg
-USE_OPENGL_RENDERER := true
-BOARD_NEEDS_MEMORYHEAPPMEM := true
-BOARD_EGL_NEEDS_LEGACY_FB := true
-TARGET_USES_ION := true
-
-# Bluetooth
-BOARD_HAVE_BLUETOOTH := true
-BOARD_HAVE_BLUETOOTH_BCM := true
-BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/rockchip/rk3188/bluetooth
-BOARD_BLUEDROID_VENDOR_CONF := device/rockchip/rk3188/bluetooth/vnd_rockchip.txt
-
-# Camera Setup
-USE_CAMERA_STUB := true
-
-# Misc display settings
-BOARD_USE_SKIA_LCDTEXT := true
-
-# Enable WEBGL in WebKit
-ENABLE_WEBGL := true
-TARGET_FORCE_CPU_UPLOAD := true
-
-# Sensors
+# sensors
 BOARD_SENSOR_ST := true
+#BOARD_SENSOR_COMPASS_AK8963 := true    #if use akm8963
+#BOARD_SENSOR_ANGLE := true		#if need calculation angle between two gsensors
+#BOARD_SENSOR_CALIBRATION := true	#if need calibration
 
-# Recovery
-BOARD_CUSTOM_RECOVERY_KEYMAPPING := ../../device/rockchip/rk31board/recovery/recovery_keys.c
-BOARD_UMS_2ND_LUNFILE := "/sys/class/android_usb/android0/f_mass_storage/lun1/file"
-BOARD_UMS_LUNFILE := "/sys/class/android_usb/android0/f_mass_storage/lun0/file"
-BOARD_HAS_NO_SELECT_BUTTON := true
-BOARD_HAS_LARGE_FILESYSTEM := true
+TARGET_BOOTLOADER_BOARD_NAME := rk30sdk
 
+# readahead files to improve boot time
+# BOARD_BOOT_READAHEAD ?= true
+
+BOARD_BP_AUTO := true
+
+#phone pad codec list
+BOARD_CODEC_WM8994 := false
+BOARD_CODEC_RT5625_SPK_FROM_SPKOUT := false
+BOARD_CODEC_RT5625_SPK_FROM_HPOUT := false
+BOARD_CODEC_RT3261 := false
+BOARD_CODEC_RT3224 := true
+BOARD_CODEC_RT5631 := false
+BOARD_CODEC_RK616 := false
+
+#if set to true m-user would be disabled and UMS enabled, if set to disable UMS would be disabled and m-user enabled
+BUILD_WITH_UMS := true
+
+# for drmservice
+BUILD_WITH_DRMSERVICE :=true
+
+# for tablet encryption
+BUILD_WITH_CRYPTO := false
+
+# for update nand 2.1
+NAND_UPDATE :=true
+
+# define tablet support NTFS 
+BOARD_IS_SUPPORT_NTFS := true
+
+#WIFI 
+BOARD_CONNECTIVITY_VENDOR := Mediatek
+BOARD_CONNECTIVITY_MODULE := mt5931_6622
+FORCE_WIFI_WORK_AS_ANDROID4_2 := false
+BUILD_MEDIATEK_RFTEST_TOOL := false
+combo_config := hardware/mediatek/config/$(strip $(BOARD_CONNECTIVITY_MODULE))/board_config.mk
+BOARD_HAVE_BLUETOOTH ?= true
+BOARD_HAVE_BLUETOOTH_BCM ?= false
+BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR ?= hardware/mediatek/bt/mt5931_6622/

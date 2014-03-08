@@ -13,7 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
+# Boot animation
+TARGET_SCREEN_HEIGHT := 1024
+TARGET_SCREEN_WIDTH := 768
 # Specify phone tech before including full_phone
 $(call inherit-product, vendor/cm/config/gsm.mk)
 
@@ -28,7 +30,7 @@ $(call inherit-product, device/rockchip/rk3188/full_rk3188.mk)
 
 # Device identifier. This must come after all inclusions
 PRODUCT_NAME := cm_rk3188
-PRODUCT_BRAND := rockhip
+PRODUCT_BRAND := rockchip
 PRODUCT_DEVICE := rk3188
 PRODUCT_MODEL := XTREME X81
 PRODUCT_MANUFACTURER := rockchip

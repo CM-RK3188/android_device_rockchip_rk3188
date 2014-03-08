@@ -39,7 +39,6 @@ PRODUCT_COPY_FILES += \
 # Recovery-Ramdisk
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/recovery/postrecoveryboot.sh:recovery/root/sbin/postrecoveryboot.sh \
-    $(LOCAL_PATH)/ramdisk/initlogo.rle:recovery/root/initlogo.rle \
     $(LOCAL_PATH)/ramdisk/rk30xxnand_ko.ko.3.0.36+:recovery/root/rk30xxnand_ko.ko.3.0.36+ \
     $(LOCAL_PATH)/ramdisk/init.rk30board.rc:recovery/root/init.rk30board.rc \
     $(LOCAL_PATH)/ramdisk/init.rk30board.usb.rc:recovery/root/init.rk30board.usb.rc \
@@ -49,46 +48,16 @@ PRODUCT_COPY_FILES += \
 #Unifique prebuilt 
 PRODUCT_COPY_FILES += \
 	$(call find-copy-subdir-files,*,device/rockchip/rk3188/prebuilt,system)	
-	
 
-PRODUCT_PROPERTY_OVERRIDES += \
-    wifi.interface=wlan0 \
-    wifi.supplicant_scan_interval=15
+#Tablet composer
+
+include frameworks/native/build/tablet-7in-hdpi-1024-dalvik-heap.mk
 
 # other kernel modules not in ramdisk
 PRODUCT_COPY_FILES += $(foreach module,\
 	$(filter-out $(RAMDISK_MODULES),$(wildcard device/rockchip/rk3188/modules/*.ko)),\
 	$(module):system/lib/modules/$(notdir $(module)))
 
-PRODUCT_PACKAGES := \
-    	libtinyalsa \
-    	libaudioutils \
-	keystore.default \
-	charger \
-	charger_res_images \
-
-# Packages
-PRODUCT_PACKAGES := \
-    rktools \
-    com.android.future.usb.accessory \
-
-# Filesystem management tools
-PRODUCT_PACKAGES += \
-    static_busybox \
-    make_ext4fs \
-    setup_fs
-
-# Live Wallpapers
-PRODUCT_PACKAGES += \
-    Galaxy4 \
-    HoloSpiralWallpaper \
-    LiveWallpapers \
-    LiveWallpapersPicker \
-    MagicSmokeWallpapers \
-    NoiseField \
-    PhaseBeam \
-    VisualizationWallpapers \
-    librs_jni
 
 # Prebuilt kernel
 ifeq ($(TARGET_PREBUILT_KERNEL),)
@@ -100,39 +69,90 @@ endif
 PRODUCT_COPY_FILES += \
     $(LOCAL_KERNEL):kernel
 
-# These are the hardware-specific features
-PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/tablet_core_hardware.xml:system/etc/permissions/tablet_core_hardware.xml \
-    frameworks/native/data/etc/android.hardware.bluetooth.xml:system/etc/permissions/android.hardware.bluetooth.xml \
-    frameworks/native/data/etc/android.hardware.location.gps.xml:system/etc/permissions/android.hardware.location.gps.xml \
-    frameworks/native/data/etc/android.hardware.wifi.direct.xml:system/etc/permissions/android.hardware.wifi.direct.xml \
-    frameworks/native/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
-    frameworks/native/data/etc/android.hardware.sensor.light.xml:system/etc/permissions/android.hardware.sensor.light.xml \
-    frameworks/native/data/etc/android.hardware.sensor.barometer.xml:system/etc/permissions/android.hardware.sensor.barometer.xml \
-    frameworks/native/data/etc/android.hardware.sensor.gyroscope.xml:system/etc/permissions/android.hardware.sensor.gyroscope.xml \
-    frameworks/native/data/etc/android.hardware.camera.flash-autofocus.xml:system/etc/permissions/android.hardware.camera.flash-autofocus.xml \
-    frameworks/native/data/etc/android.hardware.camera.front.xml:system/etc/permissions/android.hardware.camera.front.xml \
-    frameworks/native/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml \
-    frameworks/native/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml \
-    frameworks/native/data/etc/android.hardware.usb.host.xml:system/etc/permissions/android.hardware.usb.host.xml \
-    frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml
 
-# Feature live wallpaper
-PRODUCT_COPY_FILES += \
-    packages/wallpapers/LivePicker/android.software.live_wallpaper.xml:system/etc/permissions/android.software.live_wallpaper.xml
+# Live Wallpapers
+PRODUCT_PACKAGES += \
+    LiveWallpapersPicker \
+    NoiseField \
+    PhaseBeam \
+    librs_jni \
+    libjni_pinyinime \
+    hostapd_rtl
 
-PRODUCT_PROPERTY_OVERRIDES += \
-    ro.opengles.version=131072
+# HAL
+PRODUCT_PACKAGES += \
+    power.$(TARGET_BOARD_PLATFORM) \
+    sensors.$(TARGET_BOARD_HARDWARE) \
+    gralloc.$(TARGET_BOARD_HARDWARE) \
+    hwcomposer.$(TARGET_BOARD_HARDWARE) \
+    lights.$(TARGET_BOARD_HARDWARE) \
+    camera.$(TARGET_BOARD_HARDWARE) \
+    libMcClient \
+    mcDriverDaemon \
+    keystore.$(TARGET_BOARD_PLATFORM) \
+    Camera \
+    akmd 
 
-PRODUCT_TAGS += dalvik.gc.type-precise
+# charge
+PRODUCT_PACKAGES += \
+    charger \
+    charger_res_images 
+
 
 PRODUCT_CHARACTERISTICS := tablet
-$(call inherit-product, frameworks/native/build/tablet-dalvik-heap.mk)
+
+# audio lib
+PRODUCT_PACKAGES += \
+    audio_policy.$(TARGET_BOARD_HARDWARE) \
+    audio.primary.$(TARGET_BOARD_HARDWARE) \
+    audio.a2dp.default\
+    audio.r_submix.default\
+    audio.usb.default
+
+# Filesystem management tools
+# EXT3/4 support
+PRODUCT_PACKAGES += \
+    mke2fs \
+    e2fsck \
+    tune2fs \
+    resize2fs \
+    mkdosfs
+# NTFS support
+PRODUCT_PACKAGES += \
+    ntfs-3g
+
+PRODUCT_PACKAGES += \
+    com.android.future.usb.accessory
+
+# audio lib
+PRODUCT_PACKAGES += \
+    libasound \
+    alsa.default \
+    acoustics.default \
+    libtinyalsa
+
+PRODUCT_PACKAGES += \
+	alsa.audio.primary.$(TARGET_BOARD_HARDWARE)\
+	alsa.audio_policy.$(TARGET_BOARD_HARDWARE)
+
+$(call inherit-product-if-exists, device/rockchip/rk3188/external/alsa-lib/copy.mk)
+$(call inherit-product-if-exists, device/rockchip/rk3188/external/alsa-utils/copy.mk)
+
+PRODUCT_PROPERTY_OVERRIDES += \
+		ro.factory.hasUMS=true \
+		persist.sys.usb.config=mass_storage,adb 
+#bluetooth
+    PRODUCT_PROPERTY_OVERRIDES += ro.rk.btchip=mt6622
 
 
-# Set default USB interface
-PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
-    persist.sys.usb.config=mass_storage
+# for data clone
+include device/rockchip/rk3188/common/data_clone/packdata.mk
 
-# Use the non-open-source parts, if they're present
-$(call inherit-product-if-exists, vendor/rockchip/rk3188/rk3188-vendor.mk)
+$(call inherit-product, device/rockchip/rk3188/external/wlan_loader/wifi-firmware.mk)
+
+#wifi
+$(call inherit-product, hardware/mediatek/config/$(strip $(BOARD_CONNECTIVITY_MODULE))/product_package.mk)
+
+
+PRODUCT_PROPERTY_OVERRIDES += \
+        ro.vendor.sw.version=100k4
