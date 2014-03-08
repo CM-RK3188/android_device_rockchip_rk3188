@@ -1,0 +1,8 @@
+#
+# system.prop for rk30sdk
+#
+#rild.libpath=/system/lib/libreference-ril.so
+#rild.libargs=-d /dev/ttyUSB2
+# Default ecclist
+ro.ril.ecclist=112,911
+
