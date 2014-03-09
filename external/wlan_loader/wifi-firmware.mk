@@ -1,8 +1,8 @@
 
 # wifi firmware
 PRODUCT_COPY_FILES += \
-        external/wlan_loader/iwconfig:system/bin/iwconfig \
-        external/wlan_loader/iwlist:system/bin/iwlist \
+        device/rockchip/rk3188/external/wlan_loader/iwconfig:system/bin/iwconfig \
+        device/rockchip/rk3188/external/wlan_loader/iwlist:system/bin/iwlist \
 
 WifiFirmwareFile := $(shell ls $(LOCAL_PATH)/firmware)
 PRODUCT_COPY_FILES += \

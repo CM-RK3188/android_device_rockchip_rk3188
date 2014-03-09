@@ -1,3 +1,3 @@
 PRODUCT_COPY_FILES += \
-		device/rockchip/common/features/rk-camera.xml:system/etc/permissions/rk-camera.xml 
+		device/rockchip/rk3188/common/features/rk-camera.xml:system/etc/permissions/rk-camera.xml 
 

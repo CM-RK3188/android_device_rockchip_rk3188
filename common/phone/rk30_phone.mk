@@ -1,4 +1,4 @@
-CUR_PATH := device/rockchip/common
+CUR_PATH := device/rockchip/rk3188/common
 
 ######################################
 #   phonepad codec list

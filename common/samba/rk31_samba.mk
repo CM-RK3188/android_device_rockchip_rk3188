@@ -1,4 +1,4 @@
-LOCAL_PATH := device/rockchip/common/samba
+LOCAL_PATH := device/rockchip/rk3188/common/samba
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/bin/rksmbd:/root/sbin/rksmbd \
     $(LOCAL_PATH)/etc/smb.conf:/system/etc/smb.conf \

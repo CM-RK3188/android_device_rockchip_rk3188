@@ -1,4 +1,4 @@
-CUR_PATH := device/rockchip/common/app
+CUR_PATH := device/rockchip/rk3188/common/app
 PRODUCT_PACKAGES += \
     BooksProvider \
     RKEBookReader

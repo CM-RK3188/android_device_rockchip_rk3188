@@ -16,13 +16,12 @@
 
 LOCAL_PATH := device/rockchip/rk3188
 
-TARGET_BOARD_PLATFORM ?= rk30xx
-TARGET_BOARD_PLATFORM_GPU ?= mali400
-TARGET_BOARD_HARDWARE ?= rk30board
-BOARD_USE_LCDC_COMPOSER ?= false
-BOARD_USE_LOW_MEM ?= false
-$(warning rksdk boradconfig BOARD_USE_LOW_MEM=$(BOARD_USE_LOW_MEM))
-TARGET_NO_BOOTLOADER ?= true
+TARGET_BOARD_PLATFORM := rk30xx
+TARGET_BOARD_PLATFORM_GPU := mali400
+TARGET_BOARD_HARDWARE := rk30board
+BOARD_USE_LCDC_COMPOSER := true
+BOARD_USE_LOW_MEM := false
+TARGET_NO_BOOTLOADER := true
 TARGET_CPU_VARIANT := cortex-a9
 TARGET_RELEASETOOLS_EXTENSIONS := device/rockchip/rk3188/common
 
@@ -33,7 +32,7 @@ TARGET_PREBUILT_KERNEL := $(LOCAL_PATH)/kernel
 
 BOARD_CUSTOM_BOOTIMG_MK := $(LOCAL_PATH)/custombootimg.mk
 
-BOARD_EGL_CFG := device/rockchip/common/gpu/libmali_smp/egl.cfg
+BOARD_EGL_CFG := device/rockchip/rk3188/common/gpu/libmali_smp/egl.cfg
 
 
 TARGET_PROVIDES_INIT_RC ?= true
@@ -72,7 +71,8 @@ USE_OPENGL_RENDERER := true
 TARGET_EXTRA_CFLAGS += $(call cc-option,-mtune=cortex-a9,$(call cc-option,-mtune=cortex-a8)) $(call cc-option,-mcpu=cortex-a9,$(call cc-option,-mcpu=cortex-a8))
 
 # sensors
-BOARD_SENSOR_ST := true
+#BOARD_SENSOR_ST := true
+BOARD_SENSOR_NORMAL :=true
 #BOARD_SENSOR_COMPASS_AK8963 := true    #if use akm8963
 #BOARD_SENSOR_ANGLE := true		#if need calculation angle between two gsensors
 #BOARD_SENSOR_CALIBRATION := true	#if need calibration
@@ -110,10 +110,12 @@ BOARD_IS_SUPPORT_NTFS := true
 
 #WIFI 
 BOARD_CONNECTIVITY_VENDOR := Mediatek
+MT6622_BT_SUPPORT := true
 BOARD_CONNECTIVITY_MODULE := mt5931_6622
 FORCE_WIFI_WORK_AS_ANDROID4_2 := false
 BUILD_MEDIATEK_RFTEST_TOOL := false
-combo_config := hardware/mediatek/config/$(strip $(BOARD_CONNECTIVITY_MODULE))/board_config.mk
+combo_config := hardware/mediatek/config/mt5931_6622/board_config.mk
+include $(combo_config)
 BOARD_HAVE_BLUETOOTH ?= true
 BOARD_HAVE_BLUETOOTH_BCM ?= false
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR ?= hardware/mediatek/bt/mt5931_6622/

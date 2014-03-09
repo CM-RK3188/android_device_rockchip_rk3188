@@ -15,6 +15,7 @@
 #
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base.mk)
 
 # The gps config appropriate for this device
 $(call inherit-product, device/common/gps/gps_us_supl.mk)
@@ -48,6 +49,12 @@ PRODUCT_COPY_FILES += \
 #Unifique prebuilt 
 PRODUCT_COPY_FILES += \
 	$(call find-copy-subdir-files,*,device/rockchip/rk3188/prebuilt,system)	
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/audio_policy.conf:system/etc/audio_policy.conf \
+    $(LOCAL_PATH)/media_profiles_default.xml:system/etc/media_profiles_default.xml \
+    $(LOCAL_PATH)/rk29-keypad.kl:system/usr/keylayout/rk29-keypad.kl
+
 
 #Tablet composer
 
@@ -87,6 +94,7 @@ PRODUCT_PACKAGES += \
     hwcomposer.$(TARGET_BOARD_HARDWARE) \
     lights.$(TARGET_BOARD_HARDWARE) \
     camera.$(TARGET_BOARD_HARDWARE) \
+    gpu.$(TARGET_BOARD_HARDWARE) \
     libMcClient \
     mcDriverDaemon \
     keystore.$(TARGET_BOARD_PLATFORM) \
@@ -151,8 +159,26 @@ include device/rockchip/rk3188/common/data_clone/packdata.mk
 $(call inherit-product, device/rockchip/rk3188/external/wlan_loader/wifi-firmware.mk)
 
 #wifi
-$(call inherit-product, hardware/mediatek/config/$(strip $(BOARD_CONNECTIVITY_MODULE))/product_package.mk)
+$(call inherit-product, hardware/mediatek/config/mt5931_6622/product_package.mk)
 
+#include
+include device/rockchip/rk3188/common/gpu/rk30xx_gpu.mk  
+include device/rockchip/rk3188/common/vpu/rk30_vpu.mk
+include device/rockchip/rk3188/common/wifi/rk30_wifi.mk
+include device/rockchip/rk3188/common/nand/rk30_nand.mk
+include device/rockchip/rk3188/common/ipp/rk29_ipp.mk
+include device/rockchip/rk3188/common/ion/rk30_ion.mk
+include device/rockchip/rk3188/common/bin/rk30_bin.mk
+include device/rockchip/rk3188/common/webkit/rk31_webkit.mk
+include device/rockchip/rk3188/common/bluetooth/rk30_bt.mk
+include device/rockchip/rk3188/common/gps/rk30_gps.mk
+include device/rockchip/rk3188/common/app/rkupdateservice.mk
+include device/rockchip/rk3188/common/etc/adblock.mk
+include device/rockchip/rk3188/common/phone/rk30_phone.mk
+include device/rockchip/rk3188/common/features/rk-core.mk
+include device/rockchip/rk3188/common/features/rk-camera.mk
+include device/rockchip/rk3188/common/features/rk-camera-front.mk
+include device/rockchip/rk3188/common/features/rk-gms.mk
 
 PRODUCT_PROPERTY_OVERRIDES += \
         ro.vendor.sw.version=100k4
